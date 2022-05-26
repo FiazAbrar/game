@@ -92,9 +92,11 @@ def game(A_WON, B_WON, num_of_points):
         chosen_line = lines[random.randint(0, len(lines) - 1)]
 
         if chosen_line.color == None:
-            if not game_round_count == total_game_rounds - 1:
+            if not game_round_count == total_game_rounds:
                 if game_terminated_if_red(chosen_line):
-                    b_colors = "blue"
+                    if game_round_count == total_game_rounds - 1:
+                        b_colors = "red"
+                    else: b_colors = "blue"
                 else:
                     b_colors = "red"
                     if game_round_count < num_of_points - 1:
@@ -103,9 +105,6 @@ def game(A_WON, B_WON, num_of_points):
                             b_colors = "blue"
                         else: b_colors = "red"
 
-
-
-            else: b_colors = "red"
 
             chosen_line.set_color(b_colors)
             game_round_count += 1
