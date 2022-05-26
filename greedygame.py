@@ -72,6 +72,20 @@ def game(A_WON, B_WON, num_of_points):
         chosen_line.unset_color()
         return False
 
+    def check_two_vertex(chosen_line):
+        chosen_line.set_color("red")
+
+        two_vert_points = []
+        for point in points:
+            if len(point.colors_of_connections) == 2:
+                two_vert_points.append(point)
+
+        if len(two_vert_points) == num_of_points - 2:
+            chosen_line.unset_color()
+            return True
+        chosen_line.unset_color()
+        return False
+
 
     game_round_count = 0
     while game_round_count != total_game_rounds:
@@ -80,26 +94,34 @@ def game(A_WON, B_WON, num_of_points):
         if chosen_line.color == None:
             if not game_round_count == total_game_rounds - 1:
                 if game_terminated_if_red(chosen_line):
-                    #print("hmm apparently red nile naki shesh hoye jabe with this line: ", chosen_line.name)
                     b_colors = "blue"
-                else: b_colors = "red"
+                else:
+                    b_colors = "red"
+                    if game_round_count < num_of_points - 1:
+                        print("two vertex check, move num ", game_round_count)
+                        if check_two_vertex(chosen_line):
+                            b_colors = "blue"
+                        else: b_colors = "red"
+
+
+
             else: b_colors = "red"
 
             chosen_line.set_color(b_colors)
-            #print("coloring", b_colors, chosen_line.name)
             game_round_count += 1
+            print(f"{game_round_count}.", b_colors, chosen_line.name)
             if game_terminated():
                 if game_round_count == total_game_rounds:
-                    #print("terminated at the last move", "B won")
+                    print("terminated at the last move", "B won")
                     B_WON += 1
                     break
                 else:
-                    #print("terminated somewhere middle", "A won")
+                    print("terminated somewhere middle", "A won")
                     A_WON += 1
                     break
             if not game_terminated():
                 if game_round_count == total_game_rounds:
-                    #print("did not terminate", "A won")
+                    print("did not terminate", "A won")
                     A_WON += 1
 
     return A_WON, B_WON
@@ -116,9 +138,9 @@ def game_for_a_n(num_of_points, A_WON, B_WON):
     print("A er jitar percentage --", (A_WON*100)/10000, "B er jitar percentage --", (B_WON)*100/10000, "jekhane, number of points ", num_of_points, "ta")
 
 
-for num_of_points in range(50):
-    game_for_a_n(num_of_points, A_WON, B_WON)
-    A_WON, B_WON = 0, 0
+#for num_of_points in range(50):
+    #game_for_a_n(num_of_points, A_WON, B_WON)
+    #A_WON, B_WON = 0, 0
 
 
-#game(0, 0, 4)
+game(0, 0, 4)
