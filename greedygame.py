@@ -6,6 +6,7 @@ class Point:
         self.name = name
         self.lines_w = []
         self.colors_of_connections = []
+        self.is_blue = False
 
     def __str__(self):
         return self.name
@@ -25,6 +26,9 @@ class Line:
         self.color = color
         self.p1.colors_of_connections.append(color)
         self.p2.colors_of_connections.append(color)
+        if color == "blue":
+            self.p1.is_blue = True
+            self.p2.is_blue = True
 
     def unset_color(self):
         self.color = None
@@ -36,7 +40,64 @@ class Line:
         self.p2.lines_w.append(self.p1)
 
 
+def check_same(arr):
+    for i in range(len(arr) - 1):
+        if not arr[i] == arr[i+1]:
+            return False
+    return True
+
+
+def game_terminated(points, num_of_points):
+    for point in points:
+        if len(point.colors_of_connections) == num_of_points - 1:
+            if check_same(point.colors_of_connections):
+                if point.colors_of_connections[0] == "red":
+                    return True
+
+    blued_points = 0
+    for point in points:
+        if "blue" in point.colors_of_connections:
+            blued_points += 1
+
+    if blued_points == num_of_points:
+        return True
+
+    return False
+
+
+
+def game_terminated_if_red(chosen_line, points, num_of_points):
+    chosen_line.set_color("red")
+    if game_terminated(points, num_of_points):
+        chosen_line.unset_color()
+        return True
+    chosen_line.unset_color()
+    return False
+
+
+def check_two_vertex(chosen_line, points, num_of_points):
+    chosen_line.set_color("red")
+
+    two_vert_points = []
+    for point in points:
+        red = 0
+        for color in point.colors_of_connections:
+            if color == "red":
+                red += 1
+        if red == 2:
+            two_vert_points.append(point)
+
+    if len(two_vert_points) == num_of_points - 2:
+        print(two_vert_points)
+        chosen_line.unset_color()
+        return True
+    chosen_line.unset_color()
+    return False
+
+
+
 def game(A_WON, B_WON, num_of_points):
+    # game setup
     total_game_rounds = math.comb(num_of_points, 2)
     points = []
     lines = []
@@ -50,62 +111,21 @@ def game(A_WON, B_WON, num_of_points):
                 if (not points[j] in points[i].lines_w) and (not points[i] in points[j].lines_w):
                     lines.append(Line(points[i], points[j]))
 
-    def check_same(arr):
-        for i in range(len(arr) - 1):
-            if not arr[i] == arr[i+1]:
-                return False
-        return True
-
-    def game_terminated():
-        for point in points:
-            if len(point.colors_of_connections) == num_of_points - 1:
-                if check_same(point.colors_of_connections):
-                    if point.colors_of_connections[0] == "red":
-                        return True
-        return False
-
-    def game_terminated_if_red(chosen_line):
-        chosen_line.set_color("red")
-        if game_terminated():
-            chosen_line.unset_color()
-            return True
-        chosen_line.unset_color()
-        return False
-
-    def check_two_vertex(chosen_line):
-        chosen_line.set_color("red")
-
-        two_vert_points = []
-        for point in points:
-            red = 0
-            for color in point.colors_of_connections:
-                if color == "red":
-                    red += 1
-            if red == 2:
-                two_vert_points.append(point)
-
-        if len(two_vert_points) == num_of_points - 2:
-            chosen_line.unset_color()
-            return True
-        chosen_line.unset_color()
-        return False
-
-
     game_round_count = 0
     while game_round_count != total_game_rounds:
         chosen_line = lines[random.randint(0, len(lines) - 1)]
 
         if chosen_line.color == None:
             if not game_round_count == total_game_rounds:
-                if game_terminated_if_red(chosen_line):
+                if game_terminated_if_red(chosen_line, points, num_of_points):
                     if game_round_count == total_game_rounds - 1:
                         b_colors = "red"
                     else: b_colors = "blue"
                 else:
                     b_colors = "red"
-                    if game_round_count < num_of_points - 1:
+                    if game_round_count < num_of_points:
                         print("two vertex check, move num ", game_round_count)
-                        if check_two_vertex(chosen_line):
+                        if check_two_vertex(chosen_line, points, num_of_points):
                             b_colors = "blue"
                         else: b_colors = "red"
 
@@ -113,7 +133,7 @@ def game(A_WON, B_WON, num_of_points):
             chosen_line.set_color(b_colors)
             game_round_count += 1
             print(f"{game_round_count}.", b_colors, chosen_line.name)
-            if game_terminated():
+            if game_terminated(points, num_of_points):
                 if game_round_count == total_game_rounds:
                     print("terminated at the last move", "B won")
                     B_WON += 1
@@ -122,7 +142,7 @@ def game(A_WON, B_WON, num_of_points):
                     print("terminated somewhere middle", "A won")
                     A_WON += 1
                     break
-            if not game_terminated():
+            if not game_terminated(points, num_of_points):
                 if game_round_count == total_game_rounds:
                     print("did not terminate", "A won")
                     A_WON += 1
