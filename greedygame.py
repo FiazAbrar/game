@@ -77,7 +77,11 @@ def game(A_WON, B_WON, num_of_points):
 
         two_vert_points = []
         for point in points:
-            if len(point.colors_of_connections) == 2:
+            red = 0
+            for color in point.colors_of_connections:
+                if color == "red":
+                    red += 1
+            if red == 2:
                 two_vert_points.append(point)
 
         if len(two_vert_points) == num_of_points - 2:
