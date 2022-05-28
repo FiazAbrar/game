@@ -75,27 +75,6 @@ def game_terminated_if_red(chosen_line, points, num_of_points):
     return False
 
 
-def check_two_vertex(chosen_line, points, num_of_points):
-    chosen_line.set_color("red")
-
-    two_vert_points = []
-    for point in points:
-        red = 0
-        for color in point.colors_of_connections:
-            if color == "red":
-                red += 1
-        if red == 2:
-            two_vert_points.append(point)
-
-    if len(two_vert_points) == num_of_points - 2:
-        print(two_vert_points)
-        chosen_line.unset_color()
-        return True
-    chosen_line.unset_color()
-    return False
-
-
-
 def game(A_WON, B_WON, num_of_points):
     # game setup
     total_game_rounds = math.comb(num_of_points, 2)
@@ -123,11 +102,6 @@ def game(A_WON, B_WON, num_of_points):
                     else: b_colors = "blue"
                 else:
                     b_colors = "red"
-                    if game_round_count < num_of_points:
-                        print("two vertex check, move num ", game_round_count)
-                        if check_two_vertex(chosen_line, points, num_of_points):
-                            b_colors = "blue"
-                        else: b_colors = "red"
 
 
             chosen_line.set_color(b_colors)
@@ -158,7 +132,7 @@ def game_for_a_n(num_of_points, A_WON, B_WON):
         a_game = game(A_WON, B_WON, num_of_points)
         A_WON = a_game[0]
         B_WON = a_game[1]
-    print("A er jitar percentage --", (A_WON*100)/10000, "B er jitar percentage --", (B_WON)*100/10000, "jekhane, number of points ", num_of_points, "ta")
+    print("Probability of A winning -- ", (A_WON*100)/10000, " || ", "Probability of B winning --", (B_WON)*100/10000, "jekhane, number of points ", num_of_points, "ta")
 
 
 #for num_of_points in range(50):
@@ -166,4 +140,4 @@ def game_for_a_n(num_of_points, A_WON, B_WON):
     #A_WON, B_WON = 0, 0
 
 
-game(0, 0, 4)
+game(0, 0, 8)
