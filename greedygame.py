@@ -106,19 +106,19 @@ def game(A_WON, B_WON, num_of_points):
 
             chosen_line.set_color(b_colors)
             game_round_count += 1
-            print(f"{game_round_count}.", b_colors, chosen_line.name)
+            #print(f"{game_round_count}.", b_colors, chosen_line.name)
             if game_terminated(points, num_of_points):
                 if game_round_count == total_game_rounds:
-                    print("terminated at the last move", "B won")
+                    #print("terminated at the last move", "B won")
                     B_WON += 1
                     break
                 else:
-                    print("terminated somewhere middle", "A won")
+                    #print("terminated somewhere middle", "A won")
                     A_WON += 1
                     break
             if not game_terminated(points, num_of_points):
                 if game_round_count == total_game_rounds:
-                    print("did not terminate", "A won")
+                    #print("did not terminate", "A won")
                     A_WON += 1
 
     return A_WON, B_WON
@@ -132,12 +132,12 @@ def game_for_a_n(num_of_points, A_WON, B_WON):
         a_game = game(A_WON, B_WON, num_of_points)
         A_WON = a_game[0]
         B_WON = a_game[1]
-    print("Probability of A winning -- ", (A_WON*100)/10000, " || ", "Probability of B winning --", (B_WON)*100/10000, "jekhane, number of points ", num_of_points, "ta")
+    print("Probability of A winning -- ", (A_WON*100)/10000, " || ", "Probability of B winning --", (B_WON)*100/10000, "where, number of points is ", num_of_points)
 
 
-#for num_of_points in range(50):
-    #game_for_a_n(num_of_points, A_WON, B_WON)
-    #A_WON, B_WON = 0, 0
+for num_of_points in range(50):
+    game_for_a_n(num_of_points, A_WON, B_WON)
+    A_WON, B_WON = 0, 0
 
 
-game(0, 0, 8)
+#game(0, 0, 8)
